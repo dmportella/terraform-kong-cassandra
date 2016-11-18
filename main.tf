@@ -32,40 +32,14 @@ resource "docker_container" "database" {
 
 resource "docker_container" "kong" {
     image = "${docker_image.kong.latest}"
-    name = "kong"
+    name = "kong-${format("%02d", count.index + 1)}"
 
-    count = 1
+    count = 3
 
     privileged = true
     restart = "always"
 
     links = ["kong-database:kong-database"]
-
-    ports {
-    	internal = 8000
-    	external = 8000
-    }
-
-    ports {
-    	internal = 8443
-    	external = 8443
-    }
-
-    ports {
-    	internal = 8001
-    	external = 8001
-    }
-
-    ports {
-    	internal = 7946
-    	external = 7946
-    }
-
-    ports {
-    	internal = 7946
-    	external = 7946
-    	protocol = "udp"
-    }
 
     env = ["KONG_LOG_LEVEL=debug",
     "KONG_DATABASE=cassandra",
